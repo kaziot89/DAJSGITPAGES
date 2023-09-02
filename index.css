@@ -1,0 +1,68 @@
+@font-face {
+  font-family: simpsons;
+  src: url(../Simpson/Simpsonfont.ttf) format("truetype");
+}
+
+body {
+  height: 100vh;
+  background-image: url("Pictures/1367084.jpg");
+  background-size: cover;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  position: absolute;
+  height: 50%;
+  width: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 23%;
+}
+
+button {
+  background-color: transparent;
+  height: 12%;
+  min-height: 50px;
+  width: 90%;
+  min-width: 250px;
+  background-color: #f8d62d;
+  font-family: "simpsons";
+  font-size: 170%;
+  border-radius: 10px;
+  box-shadow: 15px 15px 20px rgb(111, 111, 111);
+  opacity: 0;
+  animation-name: slideIn;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+#make_l {
+  animation-delay: 0.1s;
+}
+
+#add_p {
+  animation-delay: 0.35s;
+}
+
+#edit_p {
+  animation-delay: 0.4s;
+}
+
+#saved_l {
+  animation-delay: 0.5s;
+}
+@keyframes slideIn {
+  0% {
+    opacity: 1;
+    transform: translateY(2000%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
