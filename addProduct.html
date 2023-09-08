@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <meta name="orientation" content="portrait" />
+    <link rel="stylesheet" href="addProduct.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="mainContainer">
+      <div id="name">
+        <label for="prodName">Nazwa :</label>
+        <input type="text" id="prodName" name="prodName" />
+      </div>
+
+      <div id="categoryContainer">
+        <div id="category">
+          <label for="categorySelector">Kategoria:</label>
+          <select name="" id="categorySelector">
+            <option value="" disabled selected>Wybierz kategorię</option>
+            <option value="mięso">mięso</option>
+            <option value="warzywa">warzywa</option>
+            <option value="owoce">owoce</option>
+            <option value="nabiał">nabiał</option>
+            <option value="ryby">ryby</option>
+            <option value="przetwory">przetwory</option>
+            <option value="sypkie">sypkie</option>
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+
+      <div id="pricesContainer">
+        <div class="shopContainer" id="shopContainer1">
+          <label for="shop1">Makro</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop1"
+            name="shop1"
+          />
+        </div>
+        <div class="shopContainer" id="shopContainer2">
+          <label for="shop2">Farutex</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop2"
+            name="shop2"
+          />
+        </div>
+        <div class="shopContainer" id="shopContainer3">
+          <label for="shop3">Kuchnie sw.</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop3"
+            name="shop3"
+          />
+        </div>
+        <div class="shopContainer" id="shopContainer4">
+          <label for="shop4">Chefs C.</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop4"
+            name="shop4"
+          />
+        </div>
+        <div class="shopContainer" id="shopContainer5">
+          <label for="shop5">APC</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop5"
+            name="shop5"
+          />
+        </div>
+        <div class="shopContainer" id="shopContainer6">
+          <label for="shop6">Selgros</label>
+          <input
+            type="number"
+            inputmode="numeric"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$"
+            id="shop6"
+            name="shop6"
+          />
+        </div>
+      </div>
+      <div id="buttons">
+        <button id="save">Dodaj</button>
+        <button id="back">Wstecz</button>
+        <button id="newList">Nowa lista</button>
+        <button id="editProducts">Edytuj produkty</button>
+      </div>
+    </div>
+
+    <!-- Dodaj Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+
+    <!-- Dodaj inne skrypty Firebase, jeśli potrzebujesz -->
+
+    <!-- <script src="sql.js"></script> -->
+    <script type="module" src="addProduct.js"></script>
+  </body>
+</html>
