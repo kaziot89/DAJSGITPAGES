@@ -1,0 +1,96 @@
+@font-face {
+  font-family: simpsons;
+  src: url(./Simpson/Simpsonfont.ttf) format("truetype");
+}
+
+body {
+  height: 100vh;
+  background-image: url("Pictures/1367084.jpg");
+  background-size: cover;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  position: absolute;
+  height: 50%;
+  width: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 23%;
+}
+
+button {
+  background-color: transparent;
+  height: 12%;
+  min-height: 50px;
+  width: 90%;
+  min-width: 250px;
+  background-color: #f8d62d;
+  font-family: "simpsons";
+  font-size: 170%;
+  border-radius: 10px;
+  box-shadow: 10px 10px 15px rgb(71, 71, 71);
+  opacity: 0;
+  animation-name: slideIn;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+#make_l {
+  animation-delay: 0.1s;
+}
+
+#add_p {
+  animation-delay: 0.35s;
+}
+
+#edit_p {
+  animation-delay: 0.4s;
+}
+
+#saved_l {
+  animation-delay: 0.5s;
+}
+@keyframes slideIn {
+  0% {
+    opacity: 1;
+    transform: translateY(2000%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 415px) {
+  body {
+    margin: 0;
+    /* background-position: bottom-left; */
+    background-size: 130%;
+    /* background-image: none; */
+    touch-action: none;
+    width: 100vw;
+    /* background-repeat: no-repeat; */
+  }
+  .container {
+    position: absolute;
+    width: 250px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  button {
+    font-size: 100%;
+    color: black;
+    border: solid black 1.5px;
+    box-shadow: -2px 2px 2px 0px rgba(0, 0, 0, 0.716);
+  }
+  #edit_p {
+    display: none;
+  }
+}
