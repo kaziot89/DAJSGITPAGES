@@ -3,6 +3,11 @@ import {
   get,
   getDatabase,
   ref,
+  push,
+  update,
+  remove,
+  child,
+  set,
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -22,6 +27,7 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const dataRef = ref(database, "products");
+
 get(dataRef)
   .then((snapshot) => {
     const data = snapshot.val();
@@ -195,7 +201,46 @@ function displayData(data) {
   dataContainer.innerHTML = html;
 
   const itemCounts = {};
+  function getShopName(item) {
+    // Tworzymy tablicę z dostępnymi cenami w różnych sklepach
+    const prices = [
+      item.Makro,
+      item.Farutex,
+      item.Kuchnie_świata,
+      item.Apc,
+      item.Selgros,
+      item.Chefs_culinar,
+    ];
 
+    // Tworzymy tablicę z nazwami sklepów odpowiadającymi cenom
+    const shopNames = [
+      "Makro",
+      "Farutex",
+      "Kuchnie_świata",
+      "Apc",
+      "Selgros",
+      "Chefs_culinar",
+    ];
+
+    let lowestPrice = Infinity;
+    let lowestPriceIndex = -1;
+
+    // Szukamy najniższej ceny i zapamiętujemy indeks
+    for (let i = 0; i < prices.length; i++) {
+      if (prices[i] !== undefined && parseFloat(prices[i]) < lowestPrice) {
+        lowestPrice = parseFloat(prices[i]);
+        lowestPriceIndex = i;
+      }
+    }
+
+    // Jeśli znaleziono najniższą cenę, zwracamy nazwę sklepu
+    if (lowestPriceIndex !== -1) {
+      return shopNames[lowestPriceIndex];
+    }
+
+    // Jeśli nie znaleziono najniższej ceny, zwracamy null
+    return null;
+  }
   function addButtonListeners(
     buttonPlus,
     buttonPlus5,
@@ -210,6 +255,30 @@ function displayData(data) {
         itemCounts[itemName]++;
       }
 
+      //
+      // const shopName = getShopName(data[itemName]);
+
+      // // Tworzymy referencję do zakładki sklepu w bazie danych
+      // const shopRef = ref(database, `lista/${shopName}`);
+
+      // // Dodajemy produkt do zakładki sklepu
+      // const productRef = push(shopRef);
+      // set(productRef, {
+      //   name: itemName,
+      //   weight: itemCounts[itemName],
+      //   // inne dane produktu, jeśli są
+      // })
+      //   .then(() => {
+      //     console.log(`Dodano ${itemName} do zakładki ${shopName}.`);
+      //   })
+      //   .catch((error) => {
+      //     console.error(
+      //       `Błąd podczas dodawania ${itemName} do zakładki ${shopName}:`,
+      //       error
+      //     );
+      //   });
+      // //
+
       const { container, price, lowestPrice } = getLowestPrice(data[itemName]);
 
       if (container) {
@@ -222,6 +291,9 @@ function displayData(data) {
             <div style="margin: 10px 0 0 0; width: 100%; font-size:10px; font-family:arial" id="counter-${itemName}">
               ${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>
             </div>`;
+          // TU TO DAJ;
+
+          addToFirebase(itemName, itemCounts[itemName]);
         }
 
         const itemPrice = lowestPrice * itemCounts[itemName];
@@ -284,6 +356,29 @@ function displayData(data) {
         updateSelectedProducts(itemName);
       }
     });
+    function addToFirebase(itemName, itemCount) {
+      // Uzyskujemy nazwę sklepu na podstawie danych produktu
+      const shopName = getShopName(data[itemName]);
+
+      // Inicjalizacja Firebase i referencja do bazy
+      const database = getDatabase();
+      const listaRef = ref(database, `lista/${shopName}`);
+
+      // Aktualizacja danych w bazie Firebase
+      const dataToUpdate = {};
+      dataToUpdate[itemName] = itemCount;
+      update(listaRef, dataToUpdate)
+        .then(() => {
+          console.log(`Dodano ${itemName} do bazy danych sklepu ${shopName}.`);
+        })
+        .catch((error) => {
+          console.error(
+            `Błąd podczas dodawania ${itemName} do bazy danych sklepu ${shopName}:`,
+            error
+          );
+        });
+    }
+    // button czyszczący bazę..
 
     buttonPlus5.addEventListener("click", function () {
       if (!itemCounts[itemName]) {
@@ -550,6 +645,53 @@ function displayData(data) {
   });
 }
 
+////////////////////////////////////////////////////////////////////
+//czyszczenie bazy "lista"
+//
+//
+function wyczyśćProdukty(sklepName) {
+  // Inicjalizacja Firebase i referencja do bazy
+  const database = getDatabase(); // Inicjalizacja Firebase Database
+  const sklepRef = ref(database, `lista/${sklepName}`);
+
+  // Sprawdzamy, czy zakładka "name" istnieje w danym sklepie
+  get(child(sklepRef, "name"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log(`Nie można usunąć zakładki "name" w sklepie ${sklepName}.`);
+      } else {
+        // Usuwamy całą część danych sklepu, jeśli zakładka "name" nie istnieje
+        remove(sklepRef)
+          .then(() => {
+            console.log(`Usunięto dane sklepu ${sklepName}.`);
+          })
+          .catch((error) => {
+            console.error(
+              `Błąd podczas usuwania danych sklepu ${sklepName}:`,
+              error
+            );
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(
+        `Błąd podczas sprawdzania zakładki "name" w sklepie ${sklepName}:`,
+        error
+      );
+    });
+}
+
+// button czyszczący bazę
+const buttonSummary2 = document.getElementById("ListSummary2");
+buttonSummary2.addEventListener("click", () => {
+  wyczyśćProdukty("Makro"),
+    wyczyśćProdukty("Apc"),
+    wyczyśćProdukty("Farutex"),
+    wyczyśćProdukty("Selgros"),
+    wyczyśćProdukty("Chefs_culinar"),
+    wyczyśćProdukty("Kuchnie_świata");
+});
+//////////////////////////////////////////////////////////
 function getKeyForItemName(itemCounts, count) {
   for (const key in itemCounts) {
     if (itemCounts[key] === count) {
@@ -807,3 +949,11 @@ function generateSummary(selectedProducts) {
   localStorage.removeItem("itemCounts");
   window.location.href = "summaryPage.html";
 }
+
+// firebase ReadableStreamBYOBRequest
+// {
+//   "rules": {
+//       ".read": true,
+//       ".write": true,
+//   }
+//   }

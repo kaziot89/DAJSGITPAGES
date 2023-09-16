@@ -90,6 +90,6 @@ button {
     border: solid black 1.5px;
   }
   #edit_p {
-    /* display: none; */
+    display: none;
   }
 }
