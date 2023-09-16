@@ -251,7 +251,7 @@ body {
 
   #btnssummaryMobile {
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
