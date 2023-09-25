@@ -6,7 +6,6 @@ import {
   push,
   update,
   remove,
-  onValue,
   child,
   set,
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
@@ -43,7 +42,7 @@ let totalSum3 = 0;
 let totalSum4 = 0;
 let totalSum5 = 0;
 let totalSum6 = 0;
-// let totalCost = 0;
+let totalCost = 0;
 const shopPrices = {
   Farutex: 0,
   Makro: 0,
@@ -79,74 +78,9 @@ function displayData(data) {
   const priceContainer5 = document.getElementById("price_paragraph5");
   const priceContainer6 = document.getElementById("price_paragraph6");
 
-  //
-  //
-  /////// NOWE ZASYSANIE Z BAZY /////
   let html = "";
   let counter = 1;
   let lowestPriceIndex = -1;
-
-  function setupFirebaseListeners() {
-    const shopContainers = {
-      Farutex: counterContainer1,
-      Makro: counterContainer2,
-      Kuchnie_świata: counterContainer3,
-      Chefs_culinar: counterContainer4,
-      Apc: counterContainer5,
-      Selgros: counterContainer6,
-    };
-
-    for (const shopName in shopContainers) {
-      const container = shopContainers[shopName];
-
-      if (!container) continue;
-
-      // Inicjalizacja Firebase i referencja do bazy dla danego sklepu
-      const database = getDatabase();
-      const listaRef = ref(database, `lista/${shopName}`);
-
-      // Ustawienie nasłuchiwania na zmiany w referencji
-      onValue(
-        listaRef,
-        (snapshot) => {
-          const data = snapshot.val();
-          if (!data) return;
-
-          let html = "";
-
-          // Iteracja po produktach w sklepie
-          for (const productName in data) {
-            const productCount = data[productName];
-
-            // Tutaj możesz dostosować wygląd pojedynczego produktu
-            html += `<div class="product">
-                   <span class="productName" >${productName}</span>
-                   <span class="productCount" style="float:right">${productCount} kg</span>
-                 </div>`;
-          }
-
-          // Ustawienie HTML w kontenerze dla danego sklepu
-          container.innerHTML = html;
-        },
-        (error) => {
-          console.error(
-            `Błąd podczas nasłuchiwania na zmiany w bazie dla ${shopName}:`,
-            error
-          );
-        }
-      );
-
-      // Możesz zachować referencję do funkcji off, jeśli chcesz później usunąć nasłuchiwania
-      // off(listaRef);
-    }
-  }
-
-  // Wywołanie funkcji do ustawienia nasłuchiwania na zmiany w bazie
-  setupFirebaseListeners();
-
-  //// KONIEC NOWEGO ///////
-  //
-  //
 
   function getLowestPrice(item) {
     const prices = [
@@ -327,16 +261,14 @@ function displayData(data) {
       if (container) {
         const counterElement = document.getElementById(`counter-${itemName}`);
         if (counterElement) {
-          //
-          /// ZAKOMENTOWANE BO MA NIE DRUKOWAĆ LOKALNIE //
-          //
-          // counterElement.innerHTML = `
-          //     ${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>`;
+          counterElement.innerHTML = `
+            ${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>`;
         } else {
-          // container.innerHTML += `
-          //     <div style="margin: 10px 0 0 0; width: 100%; font-size:10px; font-family:arial" id="counter-${itemName}">
-          //       ${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>
-          //     </div>`;
+          container.innerHTML += `
+            <div style="margin: 10px 0 0 0; width: 100%; font-size:10px; font-family:arial" id="counter-${itemName}">
+              ${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>
+            </div>`;
+          // TU TO DAJ;
 
           addToFirebase(itemName, itemCounts[itemName]);
         }
@@ -397,12 +329,6 @@ function displayData(data) {
         if (lowestPriceElement) {
           lowestPriceElement.textContent = `${itemPrice} zł`;
         }
-
-        //
-        //// NOWE DODAWANIE DO FIREBASE //
-        //
-        //
-        //
         function addToFirebase(itemName) {
           // Uzyskujemy nazwę sklepu na podstawie danych produktu
           const shopName = getShopName(data[itemName]);
@@ -423,16 +349,6 @@ function displayData(data) {
                   console.log(
                     `Dodano 1 ${itemName} do bazy danych sklepu ${shopName}.`
                   );
-
-                  // Tutaj możesz dodać kod do aktualizacji zawartości paragrafów shopName
-                  // Na przykład:
-                  const shopNameElement = document.querySelector(
-                    `#nameContainer${shopName} p.shopName`
-                  );
-                  if (shopNameElement) {
-                    // Jeśli istnieje, to zaktualizuj zawartość
-                    shopNameElement.textContent = shopName;
-                  }
                 })
                 .catch((error) => {
                   console.error(
@@ -448,13 +364,12 @@ function displayData(data) {
               );
             });
         }
-
         updateSelectedProducts(itemName);
         addToFirebase(itemName, itemCounts);
       }
     });
 
-    // KONIEC ////
+    // button czyszczący bazę..
 
     buttonPlus5.addEventListener("click", function () {
       if (!itemCounts[itemName]) {
@@ -476,9 +391,8 @@ function displayData(data) {
         }
       } else {
         itemCounts[itemName] += 5;
-        // ZAKOMENTOWANE BO MA NIE DRUKOWAĆ LOKALNIE//
-        // const counterToUpdate = document.getElementById(`counter-${itemName}`);
-        // counterToUpdate.innerHTML = `${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>`;
+        const counterToUpdate = document.getElementById(`counter-${itemName}`);
+        counterToUpdate.innerHTML = `${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>`;
 
         const { price, lowestPrice } = getLowestPrice(data[itemName]);
         price.innerHTML = lowestPrice * itemCounts[itemName];
@@ -549,41 +463,38 @@ function displayData(data) {
         }
 
         itemCounts[itemName] = 0;
+        counterToUpdate.remove();
 
-        // Opóźnienie usunięcia z bazy Firebase za pomocą setTimeout
-        setTimeout(() => {
-          // Usuń element z Firebase
-          function removeItemFromFirebase(itemName) {
-            // Uzyskujemy nazwę sklepu na podstawie danych produktu
-            const shopName = getShopName(data[itemName]);
-
-            // Inicjalizacja Firebase i referencja do bazy
-            const database = getDatabase();
-            const listaRef = ref(database, `lista/${shopName}/${itemName}`);
-
-            // Usunięcie elementu z bazy Firebase
-            remove(listaRef)
-              .then(() => {
-                console.log(
-                  `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
-                );
-
-                // Po usunięciu elementu z Firebase, usuń element z DOM, jeśli istnieje
-                if (counterToUpdate) {
-                  counterToUpdate.remove();
-                }
-              })
-              .catch((error) => {
-                console.error(
-                  `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
-                  error
-                );
-              });
+        price.innerHTML = lowestPrice * itemCounts[itemName];
+        const lowestPriceElement = getLowestPriceElement(lowestPriceIndex);
+        if (lowestPriceElement) {
+          lowestPriceElement.textContent = `${
+            lowestPrice * itemCounts[itemName]
+          } zł`;
+        }
+        function removeItemFromFirebase(itemName) {
+          // Uzyskujemy nazwę sklepu na podstawie danych produktu
+          const shopName = getShopName(data[itemName]);
+        
+          // Inicjalizacja Firebase i referencja do bazy
+          const database = getDatabase();
+          const listaRef = ref(database, `lista/${shopName}/${itemName}`);
+        
+          // Usunięcie elementu z bazy Firebase
+          remove(listaRef)
+            .then(() => {
+              console.log(`Usunięto ${itemName} z bazy danych sklepu ${shopName}.`);
+            })
+            .catch((error) => {
+              console.error(
+                `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
+                error
+              );
+            });
           }
 
-          // Wywołaj funkcję usuwania z Firebase
-          removeItemFromFirebase(itemName);
-        }, 1000); // Opóźnienie wynosi 1000 milisekund (1 sekunda)
+        updateSelectedProducts(itemName);
+        removeItemFromFirebase(itemName)
       }
     });
 
@@ -596,14 +507,12 @@ function displayData(data) {
         const counterToUpdate = document.getElementById(`counter-${itemName}`);
 
         itemCounts[itemName]--;
-        //
-        /// ZAKOMNETOWANE BO MA NIE DRUKOWAĆ LOKALNIE //
-        //
-        // if (itemCounts[itemName] === 0) {
-        //   counterToUpdate.remove();
-        // } else {
-        //   counterToUpdate.innerHTML = `${itemName} <span style="float:right">${itemCounts[itemName]} kg</span>`;
-        // }
+
+        if (itemCounts[itemName] === 0) {
+          counterToUpdate.remove();
+        } else {
+          counterToUpdate.innerHTML = `${itemName} <span style="float:right">${itemCounts[itemName]} kg</span>`;
+        }
 
         const { price, lowestPrice } = getLowestPrice(data[itemName]);
         price.innerHTML = lowestPrice * itemCounts[itemName];
@@ -627,8 +536,8 @@ function displayData(data) {
             .then((snapshot) => {
               const existingCount = snapshot.val() || 0;
               const updatedCount = existingCount - 1; // Increment the count
-              if ({ itemCounts } < 1) {
-                removeItemFromFirebase(itemName);
+              if ( {itemCounts} < 1) {
+                removeItemFromFirebase(itemName)
               }
               // Aktualizacja danych w bazie Firebase
               set(listaRef, updatedCount) // Use set to update the count
@@ -653,8 +562,10 @@ function displayData(data) {
         }
 
         updateSelectedProducts(itemName);
-        addToFirebaseMinus(itemName, itemCounts);
+        addToFirebaseMinus(itemName, itemCounts)
       }
+      
+      localStorage.removeItem("itemCounts");
     });
   }
   const selectedProducts = {
@@ -837,8 +748,9 @@ function wyczyśćProdukty(sklepName) {
 //
 //
 //
-const clearListButton1 = document.getElementById("clearList");
+const clearListButton1 = document.getElementById("clearList")
 const clearListButton2 = document.getElementById("MobileClearList");
+
 
 clearListButton2.addEventListener("click", () => {
   const clearProductsPromises = [
@@ -847,18 +759,16 @@ clearListButton2.addEventListener("click", () => {
     wyczyśćProdukty("Farutex"),
     wyczyśćProdukty("Selgros"),
     wyczyśćProdukty("Chefs_culinar"),
-    wyczyśćProdukty("Kuchnie_świata"),
+    wyczyśćProdukty("Kuchnie_świata")
   ];
-});
-clearListButton1.addEventListener("click", () => {
-  const clearProductsPromises = [
-    wyczyśćProdukty("Makro"),
-    wyczyśćProdukty("Apc"),
-    wyczyśćProdukty("Farutex"),
-    wyczyśćProdukty("Selgros"),
-    wyczyśćProdukty("Chefs_culinar"),
-    wyczyśćProdukty("Kuchnie_świata"),
-  ];
+    Promise.all(clearProductsPromises)
+    .then(() => {
+      // Po zakończeniu operacji w Firebase odśwież stronę
+      location.reload(); // Odśwież stronę
+    })
+    .catch((error) => {
+      console.error("Błąd podczas czyszczenia danych w Firebase:", error);
+    });
 });
 //////////////////////////////////////////////////////////
 //
@@ -1098,6 +1008,4 @@ function generateSummary(selectedProducts) {
   summaryHtml += `<div class="summaryShop"><p><strong>Selgros: ${totalSum6.toFixed(
     2
   )} zł</strong></p></div>`;
-}
-
-/////////// czytanie listy z firebase próba ///////
+  }
