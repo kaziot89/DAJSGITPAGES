@@ -23,3 +23,4 @@ confirmNo.addEventListener("click", function () {
   // Zamknij niestandardowe okno dialogowe (modal)
   confirmModal.style.display = "none";
 });
+transition: transform 0.5s;

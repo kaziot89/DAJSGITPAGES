@@ -874,7 +874,9 @@ confirmYes.addEventListener("click", function () {
 
 confirmNo.addEventListener("click", function () {
   // Zamknij niestandardowe okno dialogowe (modal)
-  confirmModal.style.display = "none";
+  setTimeout(function () {
+    confirmModal.style.display = "none";
+  }, 500);
 });
 clearListButton2.addEventListener("click", function () {
   // Pokaż niestandardowe okno dialogowe (modal)

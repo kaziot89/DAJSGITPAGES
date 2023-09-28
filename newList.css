@@ -369,7 +369,7 @@ body {
   #nameContainer7 {
     margin: 12px 0;
     min-height: 95%;
-    font-size: 8px;
+    font-size: 10px;
   }
   #nameContainer4,
   #nameContainer7 {
@@ -387,5 +387,19 @@ body {
     padding: 10px;
     line-height: 30px;
     font-size: 1.2rem;
+  }
+  #confirmYes:active {
+    transform: scale(1.1);
+    background-color: #f8d62d;
+  }
+  #confirmNo {
+    transition: transform 0.5s;
+  }
+  #confirmNo:hover {
+    background-color: rgb(197, 0, 0);
+  }
+  #confirmNo:active {
+    transform: scale(1.1);
+    background-color: #f8d62d;
   }
 }
