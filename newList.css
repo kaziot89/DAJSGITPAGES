@@ -239,12 +239,13 @@ body {
 }
 /* Stylizacja przycisków */
 .modal-button2 {
-  background-color: #f8d62d;
   width: 40%;
   height: 42px;
   margin: auto;
   font-family: "simpsons";
   font-size: 95%;
+  color: black;
+  background-color: #f8d62d;
   border: solid black 1.5px;
   border-radius: 10px;
   box-shadow: -2px 2px 2px 0px rgba(0, 0, 0, 0.716);
