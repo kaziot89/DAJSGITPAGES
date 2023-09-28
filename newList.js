@@ -22,7 +22,11 @@ const firebaseConfig = {
   appId: "1:107684649248:web:1f0e5d69a2165cf86b9f45",
   measurementId: "G-P2DWVH99KP",
 };
-
+function odswiezStrone() {
+  setTimeout(function () {
+    location.reload();
+  }, 1000); // 1000 milisekund = 1 sekunda
+}
 const app = initializeApp(firebaseConfig);
 
 const database = getDatabase(app);
@@ -530,6 +534,9 @@ function displayData(data) {
       addToFirebase5(itemName, itemCounts);
     });
     buttonClear.addEventListener("click", function () {
+      // Upewnij się, że itemName jest zdefiniowany na poziomie funkcji obsługującej kliknięcie
+      // const itemName = /* przypisz nazwę produktu do zmiennej itemName */;
+
       if (itemCounts[itemName] > 0) {
         const counterToUpdate = document.getElementById(`counter-${itemName}`);
         const { price, lowestPrice } = getLowestPrice(data[itemName]);
@@ -550,40 +557,38 @@ function displayData(data) {
 
         itemCounts[itemName] = 0;
 
-        // Opóźnienie usunięcia z bazy Firebase za pomocą setTimeout
-        setTimeout(() => {
-          // Usuń element z Firebase
-          function removeItemFromFirebase(itemName) {
-            // Uzyskujemy nazwę sklepu na podstawie danych produktu
-            const shopName = getShopName(data[itemName]);
+        // Usuń element z Firebase
+        function removeItemFromFirebase(itemName) {
+          // Uzyskujemy nazwę sklepu na podstawie danych produktu
+          const shopName = getShopName(data[itemName]);
 
-            // Inicjalizacja Firebase i referencja do bazy
-            const database = getDatabase();
-            const listaRef = ref(database, `lista/${shopName}/${itemName}`);
+          // Inicjalizacja Firebase i referencja do bazy
+          const database = getDatabase();
+          const listaRef = ref(database, `lista/${shopName}/${itemName}`);
 
-            // Usunięcie elementu z bazy Firebase
-            remove(listaRef)
-              .then(() => {
-                console.log(
-                  `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
-                );
+          // Usunięcie elementu z bazy Firebase
+          remove(listaRef)
+            .then(() => {
+              console.log(
+                `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
+              );
 
-                // Po usunięciu elementu z Firebase, usuń element z DOM, jeśli istnieje
-                if (counterToUpdate) {
-                  counterToUpdate.remove();
-                }
-              })
-              .catch((error) => {
-                console.error(
-                  `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
-                  error
-                );
-              });
-          }
+              // Po usunięciu elementu z Firebase, usuń także element z DOM, jeśli istnieje
+              if (counterToUpdate) {
+                counterToUpdate.remove();
+              }
+            })
+            .catch((error) => {
+              console.error(
+                `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
+                error
+              );
+            });
+        }
 
-          // Wywołaj funkcję usuwania z Firebase
-          removeItemFromFirebase(itemName);
-        }, 1000); // Opóźnienie wynosi 1000 milisekund (1 sekunda)
+        // Wywołaj funkcję usuwania z Firebase i DOM
+        removeItemFromFirebase(itemName);
+        odswiezStrone();
       }
     });
 
@@ -832,34 +837,42 @@ function wyczyśćProdukty(sklepName) {
       );
     });
 }
-
-// button czyszczący bazę DO ZROBIENIA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//
+/////// button czyszczący bazę ///////
 //
 //
 //
 const clearListButton1 = document.getElementById("clearList");
 const clearListButton2 = document.getElementById("MobileClearList");
 
-clearListButton2.addEventListener("click", () => {
-  const clearProductsPromises = [
+clearListButton2.addEventListener("click", function () {
+  const confirmResult = confirm("CZY SKASOWAĆ LISTĘ");
+  if (confirmResult === true) {
     wyczyśćProdukty("Makro"),
-    wyczyśćProdukty("Apc"),
-    wyczyśćProdukty("Farutex"),
-    wyczyśćProdukty("Selgros"),
-    wyczyśćProdukty("Chefs_culinar"),
-    wyczyśćProdukty("Kuchnie_świata"),
-  ];
+      wyczyśćProdukty("Apc"),
+      wyczyśćProdukty("Farutex"),
+      wyczyśćProdukty("Selgros"),
+      wyczyśćProdukty("Chefs_culinar"),
+      wyczyśćProdukty("Kuchnie_świata"),
+      odswiezStrone();
+  } else {
+  }
 });
-clearListButton1.addEventListener("click", () => {
-  const clearProductsPromises = [
+clearListButton1.addEventListener("click", function () {
+  const confirmResult = confirm("CZY SKASOWAĆ LISTĘ");
+  if (confirmResult === true) {
     wyczyśćProdukty("Makro"),
-    wyczyśćProdukty("Apc"),
-    wyczyśćProdukty("Farutex"),
-    wyczyśćProdukty("Selgros"),
-    wyczyśćProdukty("Chefs_culinar"),
-    wyczyśćProdukty("Kuchnie_świata"),
-  ];
+      wyczyśćProdukty("Apc"),
+      wyczyśćProdukty("Farutex"),
+      wyczyśćProdukty("Selgros"),
+      wyczyśćProdukty("Chefs_culinar"),
+      wyczyśćProdukty("Kuchnie_świata"),
+      odswiezStrone();
+  } else {
+  }
 });
+//
 //////////////////////////////////////////////////////////
 //
 //
@@ -898,24 +911,23 @@ function hidingProdShowingList() {
   document.getElementById("productsContainer").style = "display: none";
   document.getElementById("productsList").style = "display: none";
   document.getElementById("shoppingListContainer").style.cssText =
-    "display: flex;  max-width: 97%; max-height: 90% margin: 10px 0";
-  document.getElementById("shoppingList").style.cssText =
-    "min-height: 90%; margin: 10px";
+    "display: flex;  max-width: 100%; max-height: 90vh margin: 10px 0";
+  document.getElementById("shoppingList").style.cssText = "margin: 10px";
 
   // document.getElementsByClassName("shoppingList").style.cssText =
   //   "display:flex; flex-wrap:wrap; min-height: 90%; min-width: 50px";
   document.getElementById("nameContainer2").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
   document.getElementById("nameContainer3").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
   document.getElementById("nameContainer4").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
   document.getElementById("nameContainer5").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
   document.getElementById("nameContainer6").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
   document.getElementById("nameContainer7").style.cssText =
-    "height:45%; width: 33%; font-size: 10px";
+    "height:45%; width: 100%";
 }
 
 const $showProductList = document.getElementById("hideListShowProd");

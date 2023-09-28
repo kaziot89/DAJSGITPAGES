@@ -133,6 +133,7 @@ body {
 .shoppingList {
   display: flex;
   flex-grow: 1;
+  overflow: hidden;
   flex-wrap: nowrap;
   min-width: 750px;
   background-color: #ffffff;
@@ -259,13 +260,19 @@ body {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 98%;
-    min-height: 90%;
+    width: 100%;
+    min-height: 100%;
   }
   .shoppingList {
+    display: flex;
     min-width: 90%;
     flex-wrap: wrap;
     box-shadow: -2px 2px 2px 0px rgba(0, 0, 0, 0.716);
+    max-height: 85vh;
+  }
+  #nameHeader {
+    width: 33.33%;
+    height: 36vh;
   }
 
   #btnssummaryMobile {
@@ -288,8 +295,10 @@ body {
     border-radius: 10px;
     box-shadow: -2px 2px 2px 0px rgba(0, 0, 0, 0.716);
   }
+
   .shopName {
     font-size: 12px;
+    max-height: 15%;
   }
   #nameContainer2,
   #nameContainer3,
@@ -298,7 +307,12 @@ body {
   #nameContainer6,
   #nameContainer7 {
     margin: 12px 0;
-    min-height: 200px;
+    min-height: 95%;
+    font-size: 8px;
+  }
+  #nameContainer4,
+  #nameContainer7 {
+    border-right: none;
   }
   .newListButtonsMobile {
     color: black;

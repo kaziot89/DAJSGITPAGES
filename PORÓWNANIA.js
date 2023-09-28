@@ -1,23 +1,16 @@
-function updateUI() {
-  // Pobierz referencję do elementu, w którym chcesz wyświetlić listę produktów
-  const productListElement = document.getElementById("productsList");
+function getItemCountsFromFirebase() {
+  // Uzyskaj referencję do gałęzi z `itemCounts` w bazie Firebase
+  const itemCountsRef = firebase.database().ref("itemCounts");
 
-  // Wyczyść zawartość elementu
-  productListElement.innerHTML = "";
+  // Nasłuchuj zmian w danych
+  itemCountsRef.on("value", (snapshot) => {
+    // Pobierz dane ze Snapshot
+    const data = snapshot.val();
 
-  // Iteruj przez produkty w lokalnym stanie (itemCounts) lub pobierz je z Firebase, jeśli są dostępne
-  for (const itemName in itemCounts) {
-    if (itemCounts.hasOwnProperty(itemName)) {
-      const itemCount = itemCounts[itemName];
+    // Teraz `data` zawiera aktualny stan `itemCounts` z bazy Firebase
+    // Możesz go wykorzystać do aktualizacji stanu na stronie lub w inny sposób
+    console.log("Stan itemCounts z Firebase:", data);
 
-      // Tutaj możesz dostosować wygląd pojedynczego produktu
-      const productHTML = `<div class="product">
-                               <span class="productName">${itemName}</span>
-                               <span class="productCount" style="float:right">${itemCount} kg</span>
-                             </div>`;
-
-      // Dodaj wygenerowany HTML do listy produktów
-      productListElement.innerHTML += productHTML;
-    }
-  }
+    // Tutaj możesz umieścić kod do aktualizacji stanu na stronie
+  });
 }
