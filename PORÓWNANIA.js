@@ -1,16 +1,25 @@
-function getItemCountsFromFirebase() {
-  // Uzyskaj referencję do gałęzi z `itemCounts` w bazie Firebase
-  const itemCountsRef = firebase.database().ref("itemCounts");
+// const clearListButton = document.getElementById("clearListButton");
+const confirmModal = document.getElementById("confirmModal");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
 
-  // Nasłuchuj zmian w danych
-  itemCountsRef.on("value", (snapshot) => {
-    // Pobierz dane ze Snapshot
-    const data = snapshot.val();
+clearListButton.addEventListener("click", function () {
+  // Pokaż niestandardowe okno dialogowe (modal)
+  confirmModal.style.display = "block";
+});
 
-    // Teraz `data` zawiera aktualny stan `itemCounts` z bazy Firebase
-    // Możesz go wykorzystać do aktualizacji stanu na stronie lub w inny sposób
-    console.log("Stan itemCounts z Firebase:", data);
+confirmYes.addEventListener("click", function () {
+  // Kontynuuj odświeżaniewyczyśćProdukty("Makro"),
+  wyczyśćProdukty("Apc"),
+    wyczyśćProdukty("Farutex"),
+    wyczyśćProdukty("Selgros"),
+    wyczyśćProdukty("Chefs_culinar"),
+    wyczyśćProdukty("Kuchnie_świata"),
+    odswiezStrone();
+  location.reload();
+});
 
-    // Tutaj możesz umieścić kod do aktualizacji stanu na stronie
-  });
-}
+confirmNo.addEventListener("click", function () {
+  // Zamknij niestandardowe okno dialogowe (modal)
+  confirmModal.style.display = "none";
+});

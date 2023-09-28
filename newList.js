@@ -533,6 +533,13 @@ function displayData(data) {
       updateSelectedProducts(itemName);
       addToFirebase5(itemName, itemCounts);
     });
+
+    ////
+    ////
+    //// DO ZROBIENIA BTN CLEAR:( ////
+    ////
+    ////
+
     buttonClear.addEventListener("click", function () {
       // Upewnij się, że itemName jest zdefiniowany na poziomie funkcji obsługującej kliknięcie
       // const itemName = /* przypisz nazwę produktu do zmiennej itemName */;
@@ -588,7 +595,7 @@ function displayData(data) {
 
         // Wywołaj funkcję usuwania z Firebase i DOM
         removeItemFromFirebase(itemName);
-        odswiezStrone();
+        // odswiezStrone();
       }
     });
 
@@ -845,32 +852,44 @@ function wyczyśćProdukty(sklepName) {
 //
 const clearListButton1 = document.getElementById("clearList");
 const clearListButton2 = document.getElementById("MobileClearList");
+const confirmModal = document.getElementById("confirmModal");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
 
-clearListButton2.addEventListener("click", function () {
-  const confirmResult = confirm("CZY SKASOWAĆ LISTĘ");
-  if (confirmResult === true) {
-    wyczyśćProdukty("Makro"),
-      wyczyśćProdukty("Apc"),
-      wyczyśćProdukty("Farutex"),
-      wyczyśćProdukty("Selgros"),
-      wyczyśćProdukty("Chefs_culinar"),
-      wyczyśćProdukty("Kuchnie_świata"),
-      odswiezStrone();
-  } else {
-  }
-});
 clearListButton1.addEventListener("click", function () {
-  const confirmResult = confirm("CZY SKASOWAĆ LISTĘ");
-  if (confirmResult === true) {
-    wyczyśćProdukty("Makro"),
-      wyczyśćProdukty("Apc"),
-      wyczyśćProdukty("Farutex"),
-      wyczyśćProdukty("Selgros"),
-      wyczyśćProdukty("Chefs_culinar"),
-      wyczyśćProdukty("Kuchnie_świata"),
-      odswiezStrone();
-  } else {
-  }
+  // Pokaż niestandardowe okno dialogowe (modal)
+  confirmModal.style.display = "block";
+});
+
+confirmYes.addEventListener("click", function () {
+  // Kontynuuj odświeżaniewyczyśćProdukty("Makro"),
+  wyczyśćProdukty("Makro"),
+    wyczyśćProdukty("Apc"),
+    wyczyśćProdukty("Farutex"),
+    wyczyśćProdukty("Selgros"),
+    wyczyśćProdukty("Chefs_culinar"),
+    wyczyśćProdukty("Kuchnie_świata"),
+    odswiezStrone();
+});
+
+confirmNo.addEventListener("click", function () {
+  // Zamknij niestandardowe okno dialogowe (modal)
+  confirmModal.style.display = "none";
+});
+clearListButton2.addEventListener("click", function () {
+  // Pokaż niestandardowe okno dialogowe (modal)
+  confirmModal.style.display = "block";
+});
+
+confirmYes.addEventListener("click", function () {
+  // Kontynuuj odświeżaniewyczyśćProdukty("Makro"),
+  wyczyśćProdukty("Makro"),
+    wyczyśćProdukty("Apc"),
+    wyczyśćProdukty("Farutex"),
+    wyczyśćProdukty("Selgros"),
+    wyczyśćProdukty("Chefs_culinar"),
+    wyczyśćProdukty("Kuchnie_świata"),
+    odswiezStrone();
 });
 //
 //////////////////////////////////////////////////////////
