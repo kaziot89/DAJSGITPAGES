@@ -32,6 +32,17 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const dataRef = ref(database, "products");
+//
+const dbRef = ref(database, "lista/shopName/itemName");
+onValue(dbRef, (snapshot) => {
+  // Aktualizacja widoku w odpowiedzi na zmiany danych
+  const data = snapshot.val();
+  // Aktualizuj widok w każdym oknie przeglądarki
+});
+
+//
+
+//
 
 get(dataRef)
   .then((snapshot) => {
@@ -48,22 +59,22 @@ let totalSum4 = 0;
 let totalSum5 = 0;
 let totalSum6 = 0;
 // let totalCost = 0;
-const shopPrices = {
-  Farutex: 0,
-  Makro: 0,
-  Kuchnie_świata: 0,
-  Chefs_culinar: 0,
-  Apc: 0,
-  Selgros: 0,
-};
-const selectedProducts = {
-  Farutex: [],
-  Makro: [],
-  Kuchnie_świata: [],
-  Chefs_culinar: [],
-  Apc: [],
-  Selgros: [],
-};
+// const shopPrices = {
+//   Farutex: 0,
+//   Makro: 0,
+//   Kuchnie_świata: 0,
+//   Chefs_culinar: 0,
+//   Apc: 0,
+//   Selgros: 0,
+// };
+// const selectedProducts = {
+//   Farutex: [],
+//   Makro: [],
+//   Kuchnie_świata: [],
+//   Chefs_culinar: [],
+//   Apc: [],
+//   Selgros: [],
+// };
 // const storedSelectedProducts = localStorage.getItem("selectedProducts");
 // if (storedSelectedProducts) {
 //   Object.assign(selectedProducts, JSON.parse(storedSelectedProducts));
@@ -125,7 +136,7 @@ function displayData(data) {
             // Tutaj możesz dostosować wygląd pojedynczego produktu
             html += `<div class="product">
                    <span class="productName" >${productName}</span>
-                   <span class="productCount" style="float:right">${productCount} kg</span>
+                   <span class="productCount" style="float:right">${productCount}</span>
                  </div>`;
           }
 
@@ -311,7 +322,23 @@ function displayData(data) {
     // Jeśli nie znaleziono najniższej ceny, zwracamy null
     return null;
   }
-
+  function addEmptyFlagToShop(shopName) {
+    const database = getDatabase();
+    const listaRef = ref(database, `lista/${shopName}`);
+  
+    // Użyj funkcji `update`, aby dodać węzeł `isEmpty` do sklepu
+    const updates = {};
+    updates[` `] = " ";
+  
+    // Zaktualizuj bazę danych Firebase
+    update(listaRef, updates)
+      .then(() => {
+        console.log(`Dodano węzeł 'isEmpty: true' do sklepu ${shopName}`);
+      })
+      .catch((error) => {
+        console.error(`Błąd podczas dodawania węzła 'isEmpty: true' do sklepu ${shopName}:`, error);
+      });
+  }
   function addButtonListeners(
     buttonPlus,
     buttonPlus5,
@@ -414,7 +441,8 @@ function displayData(data) {
           // Inicjalizacja Firebase i referencja do bazy
           const database = getDatabase();
           const listaRef = ref(database, `lista/${shopName}/${itemName}`);
-
+          
+          addEmptyFlagToShop(shopName)
           // Pobranie istniejącej ilości (jeśli istnieje)
           get(listaRef)
             .then((snapshot) => {
@@ -482,7 +510,7 @@ function displayData(data) {
         itemCounts[itemName] += 5;
         // ZAKOMENTOWANE BO MA NIE DRUKOWAĆ LOKALNIE//
         // const counterToUpdate = document.getElementById(`counter-${itemName}`);
-        // counterToUpdate.innerHTML = `${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kg</span>`;
+        // counterToUpdate.innerHTML = `${itemName} <span style="float:right; font-size:10px; font-family:arial">${itemCounts[itemName]} kutas kg</span>`;
 
         const { price, lowestPrice } = getLowestPrice(data[itemName]);
         price.innerHTML = lowestPrice * itemCounts[itemName];
@@ -502,7 +530,7 @@ function displayData(data) {
         // Inicjalizacja Firebase i referencja do bazy
         const database = getDatabase();
         const listaRef = ref(database, `lista/${shopName}/${itemName}`);
-
+        addEmptyFlagToShop(shopName)
         // Pobranie istniejącej ilości (jeśli istnieje)
         get(listaRef)
           .then((snapshot) => {
@@ -539,15 +567,14 @@ function displayData(data) {
     //// DO ZROBIENIA BTN CLEAR:( ////
     ////
     ////
-
     buttonClear.addEventListener("click", function () {
       // Upewnij się, że itemName jest zdefiniowany na poziomie funkcji obsługującej kliknięcie
       // const itemName = /* przypisz nazwę produktu do zmiennej itemName */;
-
-      if (itemCounts[itemName] > 0) {
+    
+      if (itemCounts[itemName] >= 0) {
         const counterToUpdate = document.getElementById(`counter-${itemName}`);
         const { price, lowestPrice } = getLowestPrice(data[itemName]);
-
+    
         if (selectedProducts.Farutex.includes(itemName)) {
           totalSum1 -= lowestPrice * itemCounts[itemName];
         } else if (selectedProducts.Makro.includes(itemName)) {
@@ -561,43 +588,120 @@ function displayData(data) {
         } else if (selectedProducts.Selgros.includes(itemName)) {
           totalSum6 -= lowestPrice * itemCounts[itemName];
         }
-
+    
         itemCounts[itemName] = 0;
-
-        // Usuń element z Firebase
         function removeItemFromFirebase(itemName) {
-          // Uzyskujemy nazwę sklepu na podstawie danych produktu
-          const shopName = getShopName(data[itemName]);
-
-          // Inicjalizacja Firebase i referencja do bazy
-          const database = getDatabase();
-          const listaRef = ref(database, `lista/${shopName}/${itemName}`);
-
-          // Usunięcie elementu z bazy Firebase
-          remove(listaRef)
-            .then(() => {
-              console.log(
-                `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
-              );
-
-              // Po usunięciu elementu z Firebase, usuń także element z DOM, jeśli istnieje
-              if (counterToUpdate) {
-                counterToUpdate.remove();
+          //       // Uzyskujemy nazwę sklepu na podstawie danych produktu
+                const shopName = getShopName(data[itemName]);
+      
+                // Inicjalizacja Firebase i referencja do bazy
+                const database = getDatabase();
+                const listaRef = ref(database, `lista/${shopName}/${itemName}`);
+      
+                // Usunięcie elementu z bazy Firebase
+                remove(listaRef)
+                  .then(() => {
+                    console.log(
+                      `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
+                    );
+      
+                    // Po usunięciu elementu z Firebase, usuń także element z DOM, jeśli istnieje
+                    if (counterToUpdate) {
+                      counterToUpdate.remove();
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(
+                      `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
+                      error
+                    );
+                  });
               }
-            })
-            .catch((error) => {
-              console.error(
-                `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
-                error
-              );
-            });
-        }
-
-        // Wywołaj funkcję usuwania z Firebase i DOM
-        removeItemFromFirebase(itemName);
+        // Sprawdź, czy to ostatni produkt w sklepie
+        const shopName = getShopName(data[itemName]);
+        const database = getDatabase();
+        const listaRef = ref(database, `lista/${shopName}`);
+    
+        get(listaRef)
+          .then((snapshot) => {
+            const shopData = snapshot.val();
+            if (shopData) {
+              // Jeśli sklep zawiera jeszcze inne produkty, usuń tylko ten produkt
+              if (Object.keys(shopData).length > 1) {
+                removeItemFromFirebase(itemName);
+              } else {
+                // Jeśli to ostatni produkt, pozostaw pusty węzeł sklepu w bazie danych
+                removeItemFromFirebase(itemName);
+                set(ref(database, `lista/${shopName}`), null);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking shop data:", error);
+          });
+        
         // odswiezStrone();
       }
     });
+    
+    // buttonClear.addEventListener("click", function () {
+    //   // Upewnij się, że itemName jest zdefiniowany na poziomie funkcji obsługującej kliknięcie
+    //   // const itemName = /* przypisz nazwę produktu do zmiennej itemName */;
+
+    //   if (itemCounts[itemName] >= 0) {
+    //     const counterToUpdate = document.getElementById(`counter-${itemName}`);
+    //     const { price, lowestPrice } = getLowestPrice(data[itemName]);
+
+    //     if (selectedProducts.Farutex.includes(itemName)) {
+    //       totalSum1 -= lowestPrice * itemCounts[itemName];
+    //     } else if (selectedProducts.Makro.includes(itemName)) {
+    //       totalSum2 -= lowestPrice * itemCounts[itemName];
+    //     } else if (selectedProducts.Kuchnie_świata.includes(itemName)) {
+    //       totalSum3 -= lowestPrice * itemCounts[itemName];
+    //     } else if (selectedProducts.Chefs_culinar.includes(itemName)) {
+    //       totalSum4 -= lowestPrice * itemCounts[itemName];
+    //     } else if (selectedProducts.Apc.includes(itemName)) {
+    //       totalSum5 -= lowestPrice * itemCounts[itemName];
+    //     } else if (selectedProducts.Selgros.includes(itemName)) {
+    //       totalSum6 -= lowestPrice * itemCounts[itemName];
+    //     }
+
+    //     itemCounts[itemName] = 0;
+
+    //     // Usuń element z Firebase
+    //     function removeItemFromFirebase(itemName) {
+    //       // Uzyskujemy nazwę sklepu na podstawie danych produktu
+    //       const shopName = getShopName(data[itemName]);
+
+    //       // Inicjalizacja Firebase i referencja do bazy
+    //       const database = getDatabase();
+    //       const listaRef = ref(database, `lista/${shopName}/${itemName}`);
+
+    //       // Usunięcie elementu z bazy Firebase
+    //       remove(listaRef)
+    //         .then(() => {
+    //           console.log(
+    //             `Usunięto ${itemName} z bazy danych sklepu ${shopName}.`
+    //           );
+
+    //           // Po usunięciu elementu z Firebase, usuń także element z DOM, jeśli istnieje
+    //           if (counterToUpdate) {
+    //             counterToUpdate.remove();
+    //           }
+    //         })
+    //         .catch((error) => {
+    //           console.error(
+    //             `Błąd podczas usuwania ${itemName} z bazy danych sklepu ${shopName}:`,
+    //             error
+    //           );
+    //         });
+    //     }
+
+    //     // Wywołaj funkcję usuwania z Firebase i DOM
+    //     removeItemFromFirebase(itemName);
+    //     // odswiezStrone();
+    //   }
+    // });
 
     buttonMinus.addEventListener("click", function () {
       if (!itemCounts[itemName]) {
@@ -881,17 +985,6 @@ confirmNo.addEventListener("click", function () {
 clearListButton2.addEventListener("click", function () {
   // Pokaż niestandardowe okno dialogowe (modal)
   confirmModal.style.display = "block";
-});
-
-confirmYes.addEventListener("click", function () {
-  // Kontynuuj odświeżaniewyczyśćProdukty("Makro"),
-  wyczyśćProdukty("Makro"),
-    wyczyśćProdukty("Apc"),
-    wyczyśćProdukty("Farutex"),
-    wyczyśćProdukty("Selgros"),
-    wyczyśćProdukty("Chefs_culinar"),
-    wyczyśćProdukty("Kuchnie_świata"),
-    odswiezStrone();
 });
 //
 //////////////////////////////////////////////////////////
