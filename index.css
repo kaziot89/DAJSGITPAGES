@@ -10,6 +10,21 @@ body {
   background-position: bottom right;
   background-repeat: no-repeat;
 }
+.orientation-message {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8d62d;
+  color: black;
+  text-align: center;
+  font-size: 1.5rem;
+  font-family: "simpsons";
+  padding-top: 20%;
+  z-index: 1000;
+}
 
 .container {
   display: flex;

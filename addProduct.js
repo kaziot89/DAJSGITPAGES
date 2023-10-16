@@ -34,6 +34,30 @@ import {
   remove,
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
+const orientationMessage = document.getElementById("orientationMessage");
+
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
+function checkOrientation() {
+  if (isMobileDevice() && window.innerHeight < window.innerWidth) {
+    // Strona jest otwarta na urządzeniu mobilnym i w trybie landscape
+    orientationMessage.style.display = "block"; // Wyświetl komunikat
+  } else {
+    // Strona jest otwarta na komputerze lub w trybie portrait
+    orientationMessage.style.display = "none"; // Ukryj komunikat
+  }
+}
+
+// Wywołaj funkcję sprawdzania orientacji na starcie i przy zmianach orientacji
+window.addEventListener("resize", checkOrientation);
+
+// Inicjalne sprawdzenie orientacji
+checkOrientation();
+
 let saveBtn = document.getElementById("save");
 let returnBtn = document.getElementById("back");
 

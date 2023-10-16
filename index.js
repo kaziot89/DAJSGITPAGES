@@ -1,3 +1,24 @@
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
+function checkOrientation() {
+  if (isMobileDevice() && window.innerHeight < window.innerWidth) {
+    // Strona jest otwarta na urządzeniu mobilnym i w trybie landscape
+    orientationMessage.style.display = "block"; // Wyświetl komunikat
+  } else {
+    // Strona jest otwarta na komputerze lub w trybie portrait
+    orientationMessage.style.display = "none"; // Ukryj komunikat
+  }
+}
+
+// Wywołaj funkcję sprawdzania orientacji na starcie i przy zmianach orientacji
+window.addEventListener("resize", checkOrientation);
+
+// Inicjalne sprawdzenie orientacji
+checkOrientation();
 const $makeListButton = document.getElementById("make_l");
 const $addProductButton = document.getElementById("add_p");
 const $editPricesButton = document.getElementById("edit_p");
