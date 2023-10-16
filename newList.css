@@ -264,16 +264,22 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: #f8d62d;
-  color: black;
+  color: rgb(0, 0, 0);
   text-align: center;
-  font-size: 2.5rem;
+  padding-top: 50vh;
+  font-size: 32px;
   font-family: "simpsons";
-  padding-top: 20%;
+  box-shadow: 0 100px 100px #f8d62d;
   z-index: 1000;
 }
+/* .orientation-message p {
+  position: relative;
+  top: 10%;
+  left: -5%;
+} */
 
 @media (max-width: 415px) {
   body {
